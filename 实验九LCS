@@ -1,0 +1,59 @@
+#include<iostream>
+#include<cstring>
+#include<stack>
+#include<algorithm>
+#define MAX 1010
+using namespace std;
+int dp[MAX][MAX];
+int c[MAX][MAX];//存储删除信息 1删除x，2删除y，3删除两个 
+int main()
+{    
+    char a[MAX];
+    char b[MAX];
+    char temp[MAX];
+    cin>>a>>b;
+    int la=strlen(a);
+    int lb=strlen(b);
+    memset(dp,0,sizeof(dp));
+    memset(c,0,sizeof(c));
+    for(int i=1; i<=la; i++)
+    {
+        for(int j=1; j<=lb; j++)
+        {
+            if(a[i-1]==b[j-1])
+            {
+            	dp[i][j]=dp[i-1][j-1]+1;
+            	c[i][j]=3;
+			}     
+            else
+            {
+            	dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+            	if(dp[i][j-1]>=dp[i-1][j])c[i][j]=2; 		
+				else c[i][j]=1;
+			}
+
+        }
+    }
+    cout<<"最长子序列长度为："<<dp[la][lb]<<endl; 
+    cout<<"最长子序列为："; 
+    int m=la,n=lb,i=0;
+    while(m&&n)
+    {
+    	if(c[m][n]==1){
+    		a[m--]=' ';
+		}
+    	else if(c[m][n]==2)
+		{
+			b[n--]=' ';
+		}
+    	else
+    	{
+    		temp[i++]=a[m-1];
+     		a[m--]=' ';
+    		b[n--]=' ';	   		
+		}
+	}
+	for(int j=i-1;j>=0;j--)
+		if(temp[j]!=' ')cout<<temp[j];
+    return 0;
+}
